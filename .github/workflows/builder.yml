@@ -29,9 +29,44 @@ jobs:
         make dist
         ls -lah 
 
+    - name: Save build artifacts
+      uses: actions/upload-artifact@main
+      with:
+        name: build-artifacts
+        path: ./nextcloud-transfer.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Automated release of the app.
+        draft: false
+        prerelease: false
 
+  publish:
+    needs: [build, release]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@main
+      with:
+        name: build-artifacts
+      
     - name: Upload release asset
       id: upload-release-asset
       uses: actions/upload-release-asset@main
@@ -53,23 +88,3 @@ jobs:
         asset_path: ./nextcloud-transfer.tar.gz.sig.base64
         asset_name: nextcloud-transfer.tar.gz.sig.base64
         asset_content_type: text/plain
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@main
-
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Automated release of the app.
-        draft: false
-        prerelease: false
