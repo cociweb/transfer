@@ -12,4 +12,7 @@ webpackRules.RULE_ASSETS.test = /\.(png|jpe?g|gif|woff2?|eot|ttf)$/
 
 webpackConfig.module.rules = Object.values(webpackRules)
 
+// Logging configuration for debugging
+console.log('Webpack Configuration:', webpackConfig)
+
 module.exports = webpackConfig
