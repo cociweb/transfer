@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/cociweb/nextcloud-transfer.git"
   },
-  "author": "Daniel Thwaites",
+  "author": "cociweb",
   "license": "AGPL",
   "bugs": {
     "url": "https://github.com/cociweb/nextcloud-transfer/issues"
