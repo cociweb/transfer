@@ -20,10 +20,10 @@ build: npm-build icon
 
 .PHONY: dist
 dist: build
-	rm -f transfer.tar.gz
+	rm -f nextcloud-transfer.tar.gz
 	tar \
 		--transform 's|^\.|transfer|' \
-		-cvzf transfer.tar.gz \
+		-cvzf nextcloud-transfer.tar.gz \
 		./appinfo \
 		./COPYING \
 		./img \
