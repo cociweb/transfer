@@ -9,7 +9,7 @@
             using the full bandwidth available to your server. Avoid the need to
             leave your own device online to finish an upload.]]>
     </description>
-    <version>0.6.3</version>
+    <version>0.6.4</version>
     <licence>agpl</licence>
     <author mail="danthwaites30@btinternet.com" homepage="https://danth.me">Daniel Thwaites</author>
     <namespace>Transfer</namespace>
@@ -19,7 +19,7 @@
     <bugs>https://github.com/danth/transfer/issues</bugs>
     <screenshot small-thumbnail="https://raw.githubusercontent.com/danth/transfer/master/img/prompt.png">https://raw.githubusercontent.com/danth/transfer/master/img/prompt.png</screenshot>
     <dependencies>
-        <nextcloud min-version="28" max-version="28"/>
+        <nextcloud min-version="28" max-version="31"/>
     </dependencies>
     <activity>
         <settings>
