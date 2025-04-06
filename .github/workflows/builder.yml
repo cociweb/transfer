@@ -42,6 +42,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@main
 
+    - name: Determine if it is a release or pre-release
+      id: determine_release_type
+      run: |
+        if [[ "${{ github.ref }}" == refs/tags/v*.*.* ]]; then
+          echo "release_type=false" >> $GITHUB_ENV
+        else
+          echo "release_type=true" >> $GITHUB_ENV
+        fi
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@main
@@ -53,14 +62,7 @@ jobs:
         body: |
           Automated release of the app.
         draft: false
-        prerelease: false
-
-  publish:
-    needs: [build, release]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@main
+        prerelease: ${{ env.release_type }}
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
