@@ -1,0 +1,17 @@
+name: builder
+
+on:
+ push:
+    branches:
+      - master
+    tags: [ 'v*.*.*' ]
+ workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@main
+    - name: build application
+      run: make build
