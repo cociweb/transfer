@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danth/nextcloud-transfer.git"
+    "url": "git+https://github.com/cociweb/nextcloud-transfer.git"
   },
   "author": "Daniel Thwaites",
   "license": "AGPL",
   "bugs": {
-    "url": "https://github.com/danth/nextcloud-transfer/issues"
+    "url": "https://github.com/cociweb/nextcloud-transfer/issues"
   },
-  "homepage": "https://github.com/danth/nextcloud-transfer#readme",
+  "homepage": "https://github.com/cociweb/nextcloud-transfer#readme",
   "browserslist": [
     "extends @nextcloud/browserslist-config"
   ],
