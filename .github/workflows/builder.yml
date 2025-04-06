@@ -24,10 +24,14 @@ jobs:
       run: npm install
 
     - name: Build app
-      run: make build
+      run: make
+
+    - name: List root directory contents (debug step)
+      run: ls -lah
 
     - name: List dist directory contents (debug step)
       run: ls -lah dist
+        
 
     - name: Archive app
       run: |
@@ -36,7 +40,7 @@ jobs:
 
     - name: List dist directory contents (debug step)
       run: ls -lah dist
-        
+
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
