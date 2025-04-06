@@ -29,13 +29,12 @@ jobs:
     - name: List root directory contents (debug step)
       run: ls -lah
 
-    - name: List dist directory contents (debug step)
-      run: ls -lah dist
-        
+   
 
     - name: Archive app
       run: |
         make dist
+        ls -lah dist
         mv dist/app.tar.gz dist/nextcloud-transfer.tar.gz
 
     - name: List dist directory contents (debug step)
