@@ -67,6 +67,11 @@ jobs:
       with:
         name: build-artifacts
       
+    - name: Generate signature
+      run: |
+        openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
+        openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
+
     - name: Upload release asset
       id: upload-release-asset
       uses: actions/upload-release-asset@main
@@ -75,11 +80,6 @@ jobs:
         asset_path: ./nextcloud-transfer.tar.gz
         asset_name: nextcloud-transfer.tar.gz
         asset_content_type: application/gzip
-
-    - name: Generate signature
-      run: |
-        openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
-        openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
 
     - name: Upload signature
       uses: actions/upload-release-asset@main
