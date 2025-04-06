@@ -26,10 +26,17 @@ jobs:
     - name: Build app
       run: make build
 
+    - name: List dist directory contents (debug step)
+      run: ls -lah dist
+
     - name: Archive app
       run: |
         make dist
         mv dist/app.tar.gz dist/nextcloud-transfer.tar.gz
+
+    - name: List dist directory contents (debug step)
+      run: ls -lah dist
+        
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
