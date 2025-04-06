@@ -91,11 +91,17 @@ jobs:
       uses: actions/download-artifact@main
       with:
         name: build-artifacts
+
+    - name: Prepare private key and certificate
+      run: |
+        echo "${{ secrets.SIGNING_KEY  }}" > transfer.key
+      env:
+        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       
     - name: Generate signature
       run: |
         if [ -f nextcloud-transfer.tar.gz ]; then
-          openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
+          openssl dgst -sha512 -sign transfer.key -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
           openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
         else
           echo "File not found: nextcloud-transfer.tar.gz" && exit 1
@@ -126,7 +132,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker
+
+    - name: Prepare private key and certificate
       run: |
-        docker pull nextcloud:latest
-        docker run --rm -v "$(pwd):/var/www/html" nextcloud:latest php occ integrity:sign-app
+        echo "${{ secrets.SIGNING_KEY  }}" > private.key
+      env:
+        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+
+    - name: Run occ integrity:sign-app in Docker
+      run: |
+        docker run --rm \
+          -v "$(pwd):/var/www/html" \
+          -w /var/www/html \
+          nextcloud:latest \
+          php occ integrity:sign-app \
+            --privateKey=private.key \
+            --certificate=appinfo/transfer.crt \
+            --path=/var/www/html/
