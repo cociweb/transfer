@@ -17,8 +17,6 @@ jobs:
 
     - name: Set up Node.js
       uses: actions/setup-node@main
-#      with:
-#        node-version: '20'
 
     - name: Install dependencies
       run: npm install
@@ -26,19 +24,10 @@ jobs:
     - name: Build app
       run: make
 
-    - name: List root directory contents (debug step)
-      run: ls -lah
-
-   
-
     - name: Archive app
       run: |
         make dist
-        ls -lah dist
-        mv dist/app.tar.gz dist/nextcloud-transfer.tar.gz
-
-    - name: List dist directory contents (debug step)
-      run: ls -lah dist
+        ls -lah 
 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +37,7 @@ jobs:
       uses: actions/upload-release-asset@main
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/nextcloud-transfer.tar.gz
+        asset_path: ./nextcloud-transfer.tar.gz
         asset_name: nextcloud-transfer.tar.gz
         asset_content_type: application/gzip
 
