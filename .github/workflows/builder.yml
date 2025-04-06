@@ -1,17 +1,76 @@
-name: builder
+name: Build and Publish
 
 on:
- push:
+  push:
     branches:
       - master
     tags: [ 'v*.*.*' ]
- workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: checkout repo
-      uses: actions/checkout@main
-    - name: build application
-      run: make build
+    - name: Checkout repository
+      uses: actions/checkout@latest
+
+    - name: Set up Node.js
+      uses: actions/setup-node@latest
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build app
+      run: make
+
+    - name: Archive app
+      run: |
+        make dist
+        mv dist/app.tar.gz dist/transfer.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload release asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/transfer.tar.gz
+        asset_name: transfer.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Generate signature
+      run: |
+        openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out transfer.tar.gz.sig transfer.tar.gz
+        openssl base64 -in transfer.tar.gz.sig -out transfer.tar.gz.sig.base64
+
+    - name: Upload signature
+      uses: actions/upload-release-asset@latest
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./transfer.tar.gz.sig.base64
+        asset_name: transfer.tar.gz.sig.base64
+        asset_content_type: text/plain
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@latest
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Automated release of the app.
+        draft: false
+        prerelease: false
