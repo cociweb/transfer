@@ -99,6 +99,7 @@ jobs:
           openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
         else
           echo "File not found: nextcloud-transfer.tar.gz" && exit 1
+        fi
   
     - name: Upload release asset
       id: upload-release-asset
