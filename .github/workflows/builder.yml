@@ -29,7 +29,7 @@ jobs:
     - name: Archive app
       run: |
         make dist
-        mv dist/app.tar.gz dist/transfer.tar.gz
+        mv dist/app.tar.gz dist/nextcloud-transfer.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,21 +38,21 @@ jobs:
       uses: actions/upload-release-asset@main
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/transfer.tar.gz
-        asset_name: transfer.tar.gz
+        asset_path: ./dist/nextcloud-transfer.tar.gz
+        asset_name: nextcloud-transfer.tar.gz
         asset_content_type: application/gzip
 
     - name: Generate signature
       run: |
-        openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out transfer.tar.gz.sig transfer.tar.gz
-        openssl base64 -in transfer.tar.gz.sig -out transfer.tar.gz.sig.base64
+        openssl dgst -sha512 -sign ${{ secrets.SIGNING_KEY }} -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
+        openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
 
     - name: Upload signature
       uses: actions/upload-release-asset@main
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./transfer.tar.gz.sig.base64
-        asset_name: transfer.tar.gz.sig.base64
+        asset_path: ./nextcloud-transfer.tar.gz.sig.base64
+        asset_name: nextcloud-transfer.tar.gz.sig.base64
         asset_content_type: text/plain
 
   release:
