@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@latest
+      uses: actions/checkout@Latest
 
     - name: Set up Node.js
-      uses: actions/setup-node@latest
+      uses: actions/setup-node@Latest
       with:
         node-version: '14'
 
@@ -48,7 +48,7 @@ jobs:
         openssl base64 -in transfer.tar.gz.sig -out transfer.tar.gz.sig.base64
 
     - name: Upload signature
-      uses: actions/upload-release-asset@latest
+      uses: actions/upload-release-asset@Latest
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./transfer.tar.gz.sig.base64
@@ -60,11 +60,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@latest
+      uses: actions/checkout@Latest
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@latest
+      uses: actions/create-release@Latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
