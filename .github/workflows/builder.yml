@@ -81,11 +81,22 @@ jobs:
         prerelease: ${{ env.release_type }}
 
     - name: Update existing Release
+      id: update_release
       if: env.release_exists == 'true'
       run: |
         curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
           -d '{"tag_name":"${{ github.ref_name }}","name":"Release ${{ github.ref_name }}","body":"Automated release of the app.","draft":false,"prerelease":'${{ env.release_type }}'}' \
           "https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository }}/releases/${{ env.release_id }}"
+
+    - name: Construct release url
+      id: check_url
+      run: |
+        if [ ${{ env.release_exists }} == 'false' ]; then
+          release_url=${{ steps.create_release.outputs.upload_url }}
+        else
+          release_url=${{ steps.update_release.outputs.upload_url }}
+        fi
+        echo "release_url=$release_url" >> $GITHUB_ENV
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
