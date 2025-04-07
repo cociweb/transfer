@@ -96,7 +96,7 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
-        printenv PRIVATE_KEY > private.key
+        printenv PRIVATE_KEY > transfer.key
       
     - name: Generate signature
       run: |
