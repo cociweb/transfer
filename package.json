@@ -33,6 +33,6 @@
     "@nextcloud/vue": "^8.24.0",
     "path-parse": "^1.0.7",
     "vue": "^2.7.15",
-    "terser-webpack-plugin": "^5.3.10"
+    "terser-webpack-plugin": "^5.3.14"
   }
 }
