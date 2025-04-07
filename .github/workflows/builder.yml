@@ -115,6 +115,8 @@ jobs:
         asset_path: ./nextcloud-transfer.tar.gz
         asset_name: nextcloud-transfer.tar.gz
         asset_content_type: application/gzip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload signature
       uses: actions/upload-release-asset@main
@@ -123,6 +125,8 @@ jobs:
         asset_path: ./nextcloud-transfer.tar.gz.sig.base64
         asset_name: nextcloud-transfer.tar.gz.sig.base64
         asset_content_type: text/plain
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sign:
     needs: [build, release]
