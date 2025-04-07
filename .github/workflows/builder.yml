@@ -67,7 +67,7 @@ jobs:
         fi
 
     - name: Create
-      if: ${{ env.release_exists }} == 'false'
+      if: env.release_exists == 'false'
       id: create_release
       uses: actions/create-release@main
       env:
@@ -81,7 +81,7 @@ jobs:
         prerelease: ${{ env.release_type }}
 
     - name: Update existing Release
-      if: ${{ env.release_exists }} == 'true'
+      if: env.release_exists == 'truee'
       run: |
         curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
           -d '{"tag_name":"${{ github.ref_name }}","name":"Release ${{ github.ref_name }}","body":"Automated release of the app.","draft":false,"prerelease":'${{ env.release_type }}'}' \
