@@ -93,10 +93,10 @@ jobs:
         name: build-artifacts
 
     - name: Prepare private key and certificate
-      run: |
-        echo "${{ secrets.SIGNING_KEY  }}" > transfer.key
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+      run: |
+        printenv PRIVATE_KEY > private.key
       
     - name: Generate signature
       run: |
@@ -138,10 +138,11 @@ jobs:
 
 
     - name: Prepare private key and certificate
-      run: |
-        echo "${{ secrets.SIGNING_KEY  }}" > private.key
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+      run: |
+        printenv PRIVATE_KEY > private.key
+
 
     - name: Run occ integrity:sign-app in Docker
       run: |
@@ -149,7 +150,8 @@ jobs:
           -v "$(pwd):/var/www/html" \
           -w /var/www/html \
           nextcloud:latest \
+          sh -c "sleep 30 && \
           php occ integrity:sign-app \
             --privateKey=private.key \
             --certificate=appinfo/transfer.crt \
-            --path=/var/www/html/
+            --path=/var/www/html/"
