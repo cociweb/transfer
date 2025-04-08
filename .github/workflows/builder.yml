@@ -60,16 +60,21 @@ jobs:
         release_id=$(echo $response | jq -r '.id')
         if [ -z "$release_id" ]; then
           echo "release_exists=false" >> $GITHUB_ENV
-          upload_url=$(echo $response | jq -r '.upload_url')
           echo "release_url=$upload_url" >> $GITHUB_ENV
         else
           echo "release_exists=true" >> $GITHUB_ENV
           echo "release_id=$release_id" >> $GITHUB_ENV
-          echo "release_url=null" >> $GITHUB_ENV
         fi
+    - name: Create
+      if: env.release_exists == 'true'
+      id: delete_release
+      uses: cb80/delrel@latest
+      with:
+        tag: ${{ github.ref_name }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+
 
     - name: Create
-      if: env.release_exists == 'false'
       id: create_release
       uses: actions/create-release@main
       env:
@@ -81,24 +86,6 @@ jobs:
           Automated release of the app.
         draft: false
         prerelease: ${{ env.release_type }}
-
-    - name: Update existing Release
-      id: update_release
-      if: env.release_exists == 'true'
-      run: |
-        curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
-          -d '{"tag_name":"${{ github.ref_name }}","name":"Release ${{ github.ref_name }}","body":"Automated release of the app.","draft":false,"prerelease":'${{ env.release_type }}'}' \
-          "https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository }}/releases/${{ env.release_id }}"
-
-    - name: Construct release url
-      id: check_url
-      run: |
-        if [ ${{ env.release_exists }} ]; then
-          release_url=${{ env.release_url }}
-        else
-          release_url=${{ steps.create_release.outputs.upload_url }}
-        fi
-        echo "release_url=$release_url" >> $GITHUB_ENV
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
@@ -124,7 +111,7 @@ jobs:
       id: upload-release-asset
       uses: actions/upload-release-asset@main
       with:
-        upload_url: ${{ env.release_url }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./nextcloud-transfer.tar.gz
         asset_name: nextcloud-transfer.tar.gz
         asset_content_type: application/gzip
@@ -134,7 +121,7 @@ jobs:
     - name: Upload signature
       uses: actions/upload-release-asset@main
       with:
-        upload_url: ${{ env.release_url }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./nextcloud-transfer.tar.gz.sig.base64
         asset_name: nextcloud-transfer.tar.gz.sig.base64
         asset_content_type: text/plain
