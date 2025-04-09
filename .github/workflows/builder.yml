@@ -182,4 +182,4 @@ jobs:
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
             --path=/var/www/html/transfer/ && \
-          ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer"
+          ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo"
