@@ -162,18 +162,11 @@ jobs:
         printenv PRIVATE_KEY > certificates/transfer.key
         ls -lah certificates
         
-    - name: Prepare config file
-      run: |
-        mkdir -p config
-        echo "<?php" > config/config.php
-        chmod -R 777 config
-
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm \
           -v "$(pwd)/transfer/transfer:/var/www/html/transfer:rw" \
           -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
-          -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && ls -lah ~/ && \
