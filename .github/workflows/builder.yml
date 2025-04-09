@@ -46,9 +46,9 @@ jobs:
       id: determine_release_type
       run: |
         if [[ "${{ github.ref }}" == refs/tags/v*.*.* ]]; then
-          echo "release_type=false" >> $GITHUB_ENV
+          echo "prerelease_type=false" >> $GITHUB_ENV
         else
-          echo "release_type=true" >> $GITHUB_ENV
+          echo "prerelease_type=true" >> $GITHUB_ENV
         fi
 
     - name: Check if release exists
@@ -60,12 +60,11 @@ jobs:
         release_id=$(echo $response | jq -r '.id')
         if [ -z "$release_id" ]; then
           echo "release_exists=false" >> $GITHUB_ENV
-          echo "release_url=$upload_url" >> $GITHUB_ENV
         else
           echo "release_exists=true" >> $GITHUB_ENV
           echo "release_id=$release_id" >> $GITHUB_ENV
         fi
-    - name: Create
+    - name: Delete existing release
       if: env.release_exists == 'true'
       id: delete_release
       uses: cb80/delrel@latest
@@ -85,7 +84,7 @@ jobs:
         body: |
           Automated release of the app.
         draft: false
-        prerelease: ${{ env.release_type }}
+        prerelease: ${{ env.prerelease_type }}
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
@@ -136,17 +135,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@main
       with:
-        path: 'transfer'
+        path: transfer
 
 
     - name: Prepare private key and certificate
+      id: certificate_creation
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
         mkdir -p certificates
-        mv transfer/appinfo/transfer.csr certificates/transfer.csr
-        mv transfer/appinfo/transfer.crt certificates/transfer.crt
+        curl -o certificates/transfer.csr https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.csr
+        curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
         printenv PRIVATE_KEY > certificates/private.key
+        ls -lah /certificates
         
     - name: Prepare config file
       run: |
@@ -158,7 +159,8 @@ jobs:
         docker run --rm \
           --user 33 \
           -v "$(pwd)/transfer:/var/www/html" \
-          -v "$(pwd)/certificates:~/nextcloud/certificates
+          -v "$(pwd)/certificates:~/nextcloud/certificates" \
+          -v "$(pwd)/config:/var/www/html/config" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && ls -lah ~/ \
