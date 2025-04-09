@@ -165,7 +165,7 @@ jobs:
     - name: Prepare config file
       run: |
         mkdir -p config
-        echo "<?php 'config_is_read_only' => true, " > config/config.php
+        echo "<?php" > config/config.php
         chmod -R 777 config
 
     - name: Run occ integrity:sign-app in Docker
@@ -177,7 +177,7 @@ jobs:
           -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
-          sh -c "sleep 30 && ls -lah ~/ && \
+          sh -c "chmod -R 777 var/www/html/config && sleep 30 && ls -lah ~/ && \
           php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
