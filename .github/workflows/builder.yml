@@ -152,19 +152,21 @@ jobs:
     - name: Prepare config file
       run: |
         mkdir -p config
-        echo "<?php $CONFIG = array ('config_is_read_only' => true,); ?>" > config/config.php
+        echo "<?php $CONFIG = array ('config_is_read_only' => true,); " > config/config.php
+        chown -R 33 config
+        chmod -R 755 config
 
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm \
           --user 33 \
-          -v "$(pwd)/transfer:/var/www/html" \
-          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates" \
-          -v "$(pwd)/config:/var/www/html/config" \
+          -v "$(pwd)/transfer:/var/www/html/transfer:rw" \
+          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
+          -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && ls -lah ~/ && \
           php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
-            --path=/var/www/html/"
+            --path=/var/www/html/transfer/"
