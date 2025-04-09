@@ -171,7 +171,6 @@ jobs:
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm \
-          --user 33 \
           -v "$(pwd)/transfer/transfer:/var/www/html/transfer:rw" \
           -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
           -v "$(pwd)/config:/var/www/html/config:rw" \
