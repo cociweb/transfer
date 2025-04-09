@@ -157,6 +157,6 @@ jobs:
           nextcloud:latest \
           sh -c "sleep 30 && \
           php /usr/src/nextcloud/occ integrity:sign-app \
-            --privateKey=private.key \
+            --privateKey==appinfo/private.key \
             --certificate=appinfo/transfer.crt \
             --path=/var/www/html/"
