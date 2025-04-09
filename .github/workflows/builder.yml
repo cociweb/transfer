@@ -141,18 +141,18 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
-        printenv PRIVATE_KEY > private.key
+        printenv PRIVATE_KEY > appinfo/private.key
         
     - name: Prepare config file
       run: |
-        echo "<?php 'config_is_read_only' => true, ?>" > config.php
+        mkdir -p config
+        echo "<?php $CONFIG = array ('config_is_read_only' => true,); ?>" > config/config.php
 
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm \
           --user 33 \
           -v "$(pwd):/var/www/html" \
-          -v "$(pwd)/config.php:/var/www/html/config/config.php" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && \
