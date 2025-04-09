@@ -166,13 +166,13 @@ jobs:
       run: |
         mkdir -p config
         echo "<?php $CONFIG = array ('config_is_read_only' => true,); " > config/config.php
-        chmod -R 755 config
+        chmod -R 775 config
 
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm \
           --user 33 \
-          -v "$(pwd)/transfer:/var/www/html/transfer:rw" \
+          -v "$(pwd)/transfer/transfer:/var/www/html/transfer:rw" \
           -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
           -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
