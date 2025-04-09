@@ -169,4 +169,5 @@ jobs:
           php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
-            --path=/var/www/html/transfer/"
+            --path=/var/www/html/transfer/" \
+         && ls -lah /var/www/html/transfer && ls -lah /var/www/.nextcloud/certificates
