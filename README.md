@@ -42,3 +42,29 @@ This requires the following programs to be installed:
 2. Upload to GitHub releases
 3. Sign the file using `openssl dgst -sha512 -sign /path/to/signing.key /path/to/app.tar.gz | openssl base64`
 4. Paste download link and signature into the [App Store](http://apps.nextcloud.com/)
+
+## Inspiration
+
+This project is heavily inspired by:
+
+
+- [Daniel Thwaites][danth] — basically, this project is a survival of the original transfer app, authored and maintained by danth
+- [Leon Becker][beleon] — basically, this project is a survival of the original transfer app, owned by beleon
+
+Huge thanks for their ideas and efforts 👍
+
+## License
+
+GNU3 © 
+[cociweb]
+[beleon]
+[danth]
+
+<!-- Badges -->
+
+
+<!-- References -->
+
+[beleon]: https://github.com/beleon
+[danth]: https://danth.me/
+[cociweb]: https://github.com/cociweb
