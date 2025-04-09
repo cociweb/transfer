@@ -147,7 +147,7 @@ jobs:
         curl -o certificates/transfer.csr https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.csr
         curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
         printenv PRIVATE_KEY > certificates/private.key
-        ls -lah /certificates
+        ls -lah certificates
         
     - name: Prepare config file
       run: |
