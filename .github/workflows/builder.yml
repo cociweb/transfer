@@ -177,7 +177,7 @@ jobs:
           -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
-          sh -c "chmod -R 777 var/www/html/config && sleep 30 && ls -lah ~/ && \
+          sh -c "sleep 30 && ls -lah ~/ && \
           php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
