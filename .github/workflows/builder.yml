@@ -134,7 +134,9 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@main
+      with:
+        path: 'transfer'
 
 
     - name: Prepare private key and certificate
@@ -142,8 +144,8 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
         mkdir -p certificates
-        mv appinfo/transfer.csr certificates/transfer.csr
-        mv appinfo/transfer.crt certificates/transfer.crt
+        mv transfer/appinfo/transfer.csr certificates/transfer.csr
+        mv transfer/appinfo/transfer.crt certificates/transfer.crt
         printenv PRIVATE_KEY > certificates/private.key
         
     - name: Prepare config file
@@ -155,8 +157,8 @@ jobs:
       run: |
         docker run --rm \
           --user 33 \
-          -v "$(pwd):/var/www/html" \
-          -v "certificates:~/nextcloud/certificates
+          -v "$(pwd)/transfer:/var/www/html" \
+          -v "$(pwd)/certificates:~/nextcloud/certificates
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && ls -lah ~/ \
