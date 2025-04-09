@@ -102,9 +102,13 @@ jobs:
         if [ -f nextcloud-transfer.tar.gz ]; then
           openssl dgst -sha512 -sign transfer.key -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
           openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
+          openssl dgst -sha512 -sign transfer.key nextcloud-transfer.tar.gz | openssl base64 > transfer.base64
+          cat transfer.base64
+          cat nextcloud-transfer.tar.gz.sig.base64
         else
           echo "File not found: nextcloud-transfer.tar.gz" && exit 1
         fi
+      
   
     - name: Upload release asset
       id: upload-release-asset
@@ -135,8 +139,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@main
       with:
-        path: transfer
+        path: transfer-src
 
+    - name: Download build artifacts
+      uses: actions/download-artifact@main
+      with:
+        name: build-artifacts
+        
+    - name: Extract build artifacts
+      run: |
+        mkdir -p transfer
+        tar -xzf nextcloud-transfer.tar.gz -C transfer
 
     - name: Prepare private key and certificate
       id: certificate_creation
@@ -168,5 +181,5 @@ jobs:
           php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
-            --path=/var/www/html/transfer/" \
-         && ls -lah /var/www/html/transfer && ls -lah /var/www/.nextcloud/certificates
+            --path=/var/www/html/transfer/" && \
+          ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && 
