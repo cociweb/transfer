@@ -29,11 +29,29 @@ jobs:
         make dist
         ls -lah 
 
+    - name: Prepare private key and certificate
+      env:
+        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+      run: |
+        printenv PRIVATE_KEY > nextcloud-transfer.key
+      
+    - name: Generate signature
+      run: |
+        if [ -f nextcloud-transfer.tar.gz ]; then
+          openssl dgst -sha512 -sign nextcloud-transfer.key -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
+          openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
+        else
+          echo "File not found: nextcloud-transfer.tar.gz" && exit 1
+        fi
+
     - name: Save build artifacts
       uses: actions/upload-artifact@main
       with:
         name: build-artifacts
-        path: ./nextcloud-transfer.tar.gz
+        path: |
+          ./nextcloud-transfer.tar.gz
+          ./nextcloud-transfer.tar.gz.sig
+          ./nextcloud-transfer.tar.gz.sig.base64
 
   release:
     needs: build
@@ -90,24 +108,6 @@ jobs:
       uses: actions/download-artifact@main
       with:
         name: build-artifacts
-
-    - name: Prepare private key and certificate
-      env:
-        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
-      run: |
-        printenv PRIVATE_KEY > transfer.key
-      
-    - name: Generate signature
-      run: |
-        if [ -f nextcloud-transfer.tar.gz ]; then
-          openssl dgst -sha512 -sign transfer.key -out nextcloud-transfer.tar.gz.sig nextcloud-transfer.tar.gz
-          openssl base64 -in nextcloud-transfer.tar.gz.sig -out nextcloud-transfer.tar.gz.sig.base64
-          openssl dgst -sha512 -sign transfer.key nextcloud-transfer.tar.gz | openssl base64 > transfer.base64
-          cat transfer.base64
-          cat nextcloud-transfer.tar.gz.sig.base64
-        else
-          echo "File not found: nextcloud-transfer.tar.gz" && exit 1
-        fi
       
   
     - name: Upload release asset
@@ -182,4 +182,4 @@ jobs:
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
             --path=/var/www/html/transfer/" && \
-          ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && 
+          ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer
