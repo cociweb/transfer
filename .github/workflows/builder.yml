@@ -166,7 +166,7 @@ jobs:
       run: |
         mkdir -p config
         echo "<?php $CONFIG = array ('config_is_read_only' => true,); " > config/config.php
-        chmod -R 775 config
+        chmod -R 777 config
 
     - name: Run occ integrity:sign-app in Docker
       run: |
