@@ -146,7 +146,7 @@ jobs:
         mkdir -p certificates
         curl -o certificates/transfer.csr https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.csr
         curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
-        printenv PRIVATE_KEY > certificates/private.key
+        printenv PRIVATE_KEY > certificates/transfer.key
         ls -lah certificates
         
     - name: Prepare config file
@@ -159,12 +159,12 @@ jobs:
         docker run --rm \
           --user 33 \
           -v "$(pwd)/transfer:/var/www/html" \
-          -v "$(pwd)/certificates:~/nextcloud/certificates" \
+          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates" \
           -v "$(pwd)/config:/var/www/html/config" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30 && ls -lah ~/ \
           php /usr/src/nextcloud/occ integrity:sign-app \
-            --privateKey==~/nextcloud/certificates/private.key \
-            --certificate=~/nextcloud/certificates/transfer.crt \
+            --privateKey==~/.nextcloud/certificates/transfer.key \
+            --certificate=~/.nextcloud/certificates/transfer.crt \
             --path=/var/www/html/"
