@@ -105,7 +105,7 @@ jobs:
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
-        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo"
+        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /certificates"
 
 
   release:
