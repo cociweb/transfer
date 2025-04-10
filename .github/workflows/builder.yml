@@ -71,6 +71,8 @@ jobs:
     - name: Extract build artifacts
       run: |
         mkdir -p transfer
+        mkdir -p config
+        chmod -R 777 config
         tar -xzf nextcloud-transfer.tar.gz -C transfer
 
     - name: Prepare private key and certificate
@@ -88,8 +90,9 @@ jobs:
       run: |
         docker run --rm \
           -d --name nextcloud --user 33:33 \
-          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
+          -v "$(pwd)/certificates:/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
+          -v "$(pwd)/config:/var/www/html/config:rw" \
           -v "./nextcloud-transfer.tar.gz:/var/www/html/nextcloud-transfer.tar.gz:rw" \
           -w /var/www/html \
           nextcloud:latest \
@@ -98,11 +101,11 @@ jobs:
           
     - name: Run occ command
       run: |
-        docker exec nextcloud php /usr/src/nextcloud/occ integrity:sign-app \
-            --privateKey==~/.nextcloud/certificates/transfer.key \
-            --certificate=~/.nextcloud/certificates/transfer.crt \
+        docker exec nextcloud php occ integrity:sign-app \
+            --privateKey=/certificates/transfer.key \
+            --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
-        ls -lah /var/www/html && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo
+        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo
 
 
   release:
