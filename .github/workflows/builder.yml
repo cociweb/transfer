@@ -71,10 +71,23 @@ jobs:
     - name: Extract build artifacts
       run: |
         mkdir -p transfer
-        mkdir -p config
-        chown -R $(id -u):$(id -g) config || true
-        chmod -R 777 config
         tar -xzf nextcloud-transfer.tar.gz -C transfer
+
+    - name: Create config.php
+      run: |
+        mkdir -p config
+        cat <<EOL > config/config.php
+        <?php
+        return [
+            'config_is_read_only' => true,
+            'dbtype' => 'sqlite',
+            'dbname' => 'nextcloud',
+            'dbuser' => 'user',
+            'dbpassword' => 'password',
+            'dbhost' => 'localhost',
+            'installed' => true,
+        ];
+        EOL
 
     - name: Prepare private key and certificate
       id: certificate_creation
