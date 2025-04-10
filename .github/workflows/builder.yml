@@ -110,7 +110,7 @@ jobs:
           -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
-          sh -c "sleep 30"
+          sh -c "sleep 30 && su --command 'chown -R www-data:wwww-data /var/www/html/config' www-data"
           
     - name: Run occ command
       run: |
