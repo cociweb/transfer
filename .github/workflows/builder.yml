@@ -79,7 +79,7 @@ jobs:
         cat <<EOL > config/config.php
         <?php
         return [
-            'config_is_read_only' => true,
+            'config_is_read_only' => false,
             'dbtype' => 'sqlite',
             'dbname' => 'nextcloud',
             'dbuser' => 'user',
