@@ -72,7 +72,7 @@ jobs:
       run: |
         mkdir -p transfer
         mkdir -p config
-        sudo chown -R 33:33 config
+        chown -R $(id -u):$(id -g) config || true
         chmod -R 777 config
         tar -xzf nextcloud-transfer.tar.gz -C transfer
 
