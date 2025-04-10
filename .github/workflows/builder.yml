@@ -123,7 +123,6 @@ jobs:
     - name: Stop and remove Docker container
       run: |
         docker stop nextcloud
-        docker rm nextcloud
 
   release:
     needs: [build, sign]
