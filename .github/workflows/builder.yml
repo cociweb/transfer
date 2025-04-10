@@ -72,6 +72,7 @@ jobs:
       run: |
         mkdir -p transfer
         mkdir -p config
+        chown -R 33:33 config
         chmod -R 777 config
         tar -xzf nextcloud-transfer.tar.gz -C transfer
 
@@ -96,11 +97,6 @@ jobs:
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30"
-          
-    - name: Adjust permissions inside Docker
-      run: |
-        docker exec nextcloud chown -R www-data:www-data /var/www/html/config
-        docker exec nextcloud chmod -R 777 /var/www/html/config
           
     - name: Run occ command
       run: |
