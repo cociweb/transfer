@@ -88,12 +88,11 @@ jobs:
         
     - name: Run occ integrity:sign-app in Docker
       run: |
-        docker run --rm \
+        docker run --rm --privileged \
           -d --name nextcloud --user 33:33 \
           -v "$(pwd)/certificates:/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
           -v "$(pwd)/config:/var/www/html/config:rw" \
-          -v "./nextcloud-transfer.tar.gz:/var/www/html/nextcloud-transfer.tar.gz:rw" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30"
@@ -101,7 +100,7 @@ jobs:
     - name: Adjust permissions inside Docker
       run: |
         docker exec nextcloud chown -R www-data:www-data /var/www/html/config
-        docker exec nextcloud chmod -R 750 /var/www/html/config
+        docker exec nextcloud chmod -R 777 /var/www/html/config
           
     - name: Run occ command
       run: |
