@@ -88,6 +88,7 @@ jobs:
             'installed' => true,
         ];
         EOL
+        chmod -R 777 config
 
     - name: Prepare private key and certificate
       id: certificate_creation
