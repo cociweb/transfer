@@ -104,13 +104,17 @@ jobs:
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm --privileged \
-          -d --name nextcloud --user 33:33 \
+          -d --name nextcloud \
           -v "$(pwd)/certificates:/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
           -v "$(pwd)/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
-          sh -c "sleep 30 && su --command 'chown -R www-data:wwww-data /var/www/html/config' www-data"
+          sh -c "sleep 30 && chown -R www-data:wwww-data /var/www/html/config"
+
+    - name: Run occ command
+      run: |
+        docker exec -t -u 33 nextcloud sh -c "php /usr/src/nextcloud/occ config:list --output=json_pretty"
           
     - name: Run occ command
       run: |
