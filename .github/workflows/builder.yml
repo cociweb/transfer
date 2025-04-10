@@ -98,6 +98,10 @@ jobs:
           nextcloud:latest \
           sh -c "sleep 30"
           
+    - name: Adjust permissions inside Docker
+      run: |
+        docker exec nextcloud chown -R www-data:www-data /var/www/html/config
+        docker exec nextcloud chmod -R 750 /var/www/html/config
           
     - name: Run occ command
       run: |
@@ -106,7 +110,11 @@ jobs:
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
         ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /certificates"
-
+        
+    - name: Stop and remove Docker container
+      run: |
+        docker stop nextcloud
+        docker rm nextcloud
 
   release:
     needs: [build, sign]
