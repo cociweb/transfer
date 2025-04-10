@@ -53,8 +53,59 @@ jobs:
           ./nextcloud-transfer.tar.gz.sig
           ./nextcloud-transfer.tar.gz.sig.base64
 
-  release:
+  sign:
     needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@main
+      with:
+        path: transfer-src
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@main
+      with:
+        name: build-artifacts
+        
+    - name: Extract build artifacts
+      run: |
+        mkdir -p transfer
+        tar -xzf nextcloud-transfer.tar.gz -C transfer
+
+    - name: Prepare private key and certificate
+      id: certificate_creation
+      env:
+        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+      run: |
+        mkdir -p certificates
+        curl -o certificates/transfer.csr https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.csr
+        curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
+        printenv PRIVATE_KEY > certificates/transfer.key
+        ls -lah certificates
+        
+    - name: Run occ integrity:sign-app in Docker
+      run: |
+        docker run --rm \
+          -d --name nextcloud --user 33:33 \
+          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
+          -v "$(pwd):/var/www/html:rw" \
+          -w /var/www/html \
+          nextcloud:latest \
+          sh -c "sleep 30"
+          
+          
+    - name: Run occ command
+      run: |
+        docker exec nextcloud php /usr/src/nextcloud/occ integrity:sign-app \
+            --privateKey==~/.nextcloud/certificates/transfer.key \
+            --certificate=~/.nextcloud/certificates/transfer.crt \
+            --path=/var/www/html/nextcloud-transfer.tar.gz && \
+        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo"
+
+
+  release:
+    needs: [build, sign]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -131,47 +182,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  sign:
-    needs: [build, release]
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@main
-      with:
-        path: transfer-src
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@main
-      with:
-        name: build-artifacts
-        
-    - name: Extract build artifacts
-      run: |
-        mkdir -p transfer
-        tar -xzf nextcloud-transfer.tar.gz -C transfer
-
-    - name: Prepare private key and certificate
-      id: certificate_creation
-      env:
-        PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
-      run: |
-        mkdir -p certificates
-        curl -o certificates/transfer.csr https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.csr
-        curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
-        printenv PRIVATE_KEY > certificates/transfer.key
-        ls -lah certificates
-        
-    - name: Run occ integrity:sign-app in Docker
-      run: |
-        docker run --rm \
-          -v "$(pwd)/transfer/transfer:/var/www/html/transfer:rw" \
-          -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
-          -w /var/www/html \
-          nextcloud:latest \
-          sh -c "sleep 30 && ls -lah ~/ && \
-          php /usr/src/nextcloud/occ integrity:sign-app \
-            --privateKey==~/.nextcloud/certificates/transfer.key \
-            --certificate=~/.nextcloud/certificates/transfer.crt \
-            --path=/var/www/html/transfer/ && \
-          ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo"
