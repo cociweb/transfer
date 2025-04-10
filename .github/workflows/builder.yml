@@ -90,6 +90,7 @@ jobs:
           -d --name nextcloud --user 33:33 \
           -v "$(pwd)/certificates:/var/www/.nextcloud/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
+          -v "./nextcloud-transfer.tar.gz:/var/www/html/nextcloud-transfer.tar.gz:rw" \
           -w /var/www/html \
           nextcloud:latest \
           sh -c "sleep 30"
@@ -101,7 +102,7 @@ jobs:
             --privateKey==~/.nextcloud/certificates/transfer.key \
             --certificate=~/.nextcloud/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
-        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo
+        ls -lah /var/www/html && ls -lah /var/www/.nextcloud/certificates && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo
 
 
   release:
