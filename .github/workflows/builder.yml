@@ -114,6 +114,7 @@ jobs:
 
     - name: Run occ command
       run: |
+        docker exec -t -u 33 nextcloud sh -c "find / -name 'occ' 2>/dev/null"
         docker exec -t -u 33 nextcloud sh -c 'php occ config:list --output=json_pretty'
           
     - name: Run occ command
