@@ -88,7 +88,7 @@ jobs:
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm --privileged \
-          -d --name nextcloud \
+          -d --name nextcloud --user 1001:118\
           -v "$(pwd)/certificates:/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
           -v "$(pwd)/transfer-src/config:/var/www/html/config:rw" \
@@ -98,11 +98,11 @@ jobs:
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33 nextcloud sh -c 'php /usr/src/nextcloud/occ config:list --output=json_pretty'
+        docker exec -t -u 1001:118 nextcloud sh -c 'php /usr/src/nextcloud/occ config:list --output=json_pretty'
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33 nextcloud sh -c "php /usr/src/nextcloud/occ integrity:sign-app \
+        docker exec -t -u 1001:118 nextcloud sh -c "php /usr/src/nextcloud/occ integrity:sign-app \
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
