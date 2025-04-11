@@ -142,7 +142,7 @@ jobs:
           echo "release_id=$release_id" >> $GITHUB_ENV
         fi
     - name: Delete existing release
-      if: env.release_exists == 'true'
+      if: ${{ env.release_exists }} == 'true'
       id: delete_release
       uses: cb80/delrel@latest
       with:
@@ -161,7 +161,7 @@ jobs:
         body: |
           Automated release of the app.
         draft: false
-        prerelease: ${{ env.prerelease_type }}
+        prerelease: ${{ env.prerelease_type || 'false' }}
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
