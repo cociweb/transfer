@@ -1,9 +1,9 @@
 <?php
 $AUTOCONFIG = array(
-  "dbtype"        => "mysql",
   "dbname"        => "nextcloud",
-  "dbuser"        => "username",
+  "dbuser"        => "nextcloud",
   "dbpass"        => "password",
+  "dbtype"        => "mariadb",
   "dbhost"        => "localhost",
   "dbtableprefix" => "",
   "adminlogin"    => "root",
