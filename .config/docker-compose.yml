@@ -5,6 +5,8 @@ services:
     restart: always
     volumes:
       - db:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
       - MYSQL_ROOT_PASSWORD=
       - MARIADB_AUTO_UPGRADE=1
@@ -12,8 +14,9 @@ services:
     env_file:
       - db.env
 
-  app:
+  nextcloud:
     image: nextcloud:apache
+    container_name: nextcloud
     restart: always
     working_dir: /var/www/html
     user: 1001:118
