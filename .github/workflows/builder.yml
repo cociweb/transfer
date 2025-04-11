@@ -27,14 +27,14 @@ jobs:
     - name: Archive app
       run: |
         make dist
-        ls -lah 
+        ls -lah
 
     - name: Prepare private key and certificate
       env:
         PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
         printenv PRIVATE_KEY > nextcloud-transfer.key
-      
+
     - name: Generate signature
       run: |
         if [ -f nextcloud-transfer.tar.gz ]; then
@@ -67,7 +67,7 @@ jobs:
       uses: actions/download-artifact@main
       with:
         name: build-artifacts
-        
+
     - name: Extract build artifacts
       run: |
         mkdir -p transfer
@@ -84,22 +84,22 @@ jobs:
         curl -o certificates/transfer.crt https://raw.githubusercontent.com/nextcloud/app-certificate-requests/refs/heads/master/transfer/transfer.crt
         printenv PRIVATE_KEY > certificates/transfer.key
         ls -lah certificates
-        
+
     - name: Run occ integrity:sign-app in Docker
       run: |
         docker run --rm --privileged \
           -d --name nextcloud \
           -v "$(pwd)/certificates:/certificates:rw" \
           -v "$(pwd):/var/www/html:rw" \
-          -v "$(pwd)/config:/var/www/html/config:rw" \
+          -v "$(pwd)/transfer-src/config:/var/www/html/config:rw" \
           -w /var/www/html \
           nextcloud:latest \
-          sh -c "sleep 30 && chown -R www-data:wwww-data /var/www/html/config"
+          sh -c "sleep 30"
 
     - name: Run occ command
       run: |
         docker exec -t nextcloud sh -c 'php /usr/src/nextcloud/occ config:list --output=json_pretty'
-          
+
     - name: Run occ command
       run: |
         docker exec -t -u 33 nextcloud sh -c "php /usr/src/nextcloud/occ integrity:sign-app \
@@ -107,7 +107,7 @@ jobs:
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
         ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /certificates"
-        
+
     - name: Stop and remove Docker container
       run: |
         docker stop nextcloud
@@ -141,14 +141,14 @@ jobs:
           echo "release_exists=true" >> $GITHUB_ENV
           echo "release_id=$release_id" >> $GITHUB_ENV
         fi
+
     - name: Delete existing release
-      if: ${{ env.release_exists }} == 'true'
+      if: github.env.release_exists == 'true'
       id: delete_release
       uses: cb80/delrel@latest
       with:
         tag: ${{ github.ref_name }}
         token: ${{ secrets.GITHUB_TOKEN }}
-
 
     - name: Create
       id: create_release
@@ -161,14 +161,13 @@ jobs:
         body: |
           Automated release of the app.
         draft: false
-        prerelease: ${{ env.prerelease_type || 'false' }}
+        prerelease: ${{ github.env.prerelease_type || 'false' }}
 
     - name: Download build artifacts
       uses: actions/download-artifact@main
       with:
         name: build-artifacts
-      
-  
+
     - name: Upload release asset
       id: upload-release-asset
       uses: actions/upload-release-asset@main
