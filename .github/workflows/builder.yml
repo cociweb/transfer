@@ -72,7 +72,11 @@ jobs:
       run: |
         mkdir -p transfer
         tar -xzf nextcloud-transfer.tar.gz -C transfer
-
+    # Add this step to install Docker Compose
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
     - name: Prepare private key and certificate
       id: certificate_creation
