@@ -73,22 +73,6 @@ jobs:
         mkdir -p transfer
         tar -xzf nextcloud-transfer.tar.gz -C transfer
 
-    - name: Create config.php
-      run: |
-        mkdir -p config
-        cat <<EOL > config/config.php
-        <?php
-        return [
-            'config_is_read_only' => false,
-            'dbtype' => 'sqlite',
-            'dbname' => 'nextcloud',
-            'dbuser' => 'user',
-            'dbpassword' => 'password',
-            'dbhost' => 'localhost',
-            'installed' => true,
-        ];
-        EOL
-        chmod -R 777 config
 
     - name: Prepare private key and certificate
       id: certificate_creation
