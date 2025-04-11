@@ -4,7 +4,7 @@ services:
     command: --transaction-isolation=READ-COMMITTED
     restart: always
     volumes:
-      - db:/var/lib/mysql:Z
+      - db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=
       - MARIADB_AUTO_UPGRADE=1
@@ -20,9 +20,11 @@ services:
     ports:
       - 127.0.0.1:8080:80
     volumes:
-      - nextcloud:/var/www/html:z
-      - /certificates:/certificates:rw" \
-      - /transfer-src/.config:/var/www/html/config:rw" \
+      - nextcloud:/var/www/html
+      - /certificates:/certificates
+      - /transfer-src/.config:/var/www/html/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
     environment:
       - UID=1001
