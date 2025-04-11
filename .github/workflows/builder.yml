@@ -95,7 +95,7 @@ jobs:
 
     - name: Run occ command
       run: |
-        ls -lah $(pwd) && ls -lah $(pwd)/config && ls -lah /certificates"
+        ls -lah $(pwd) && ls -lah $(pwd)/config && ls -lah /certificates
 
     - name: Wait for 30 seconds
       run: sleep 30
