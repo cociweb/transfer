@@ -85,16 +85,9 @@ jobs:
         printenv PRIVATE_KEY > certificates/transfer.key
         ls -lah certificates
 
-    - name: Run occ integrity:sign-app in Docker
+    - name: Configure Docker
       run: |
-        docker run --rm --privileged \
-          -d --name nextcloud --user 1001:118\
-          -v "$(pwd)/certificates:/certificates:rw" \
-          -v "$(pwd):/var/www/html:rw" \
-          -v "$(pwd)/transfer-src/config:/var/www/html/config:rw" \
-          -w /var/www/html \
-          nextcloud:latest \
-          sh -c "sleep 30"
+        docker-compose -f $(pwd)/transfer-src/.config/docker-compose.yml up -d
 
     - name: Run occ command
       run: |
