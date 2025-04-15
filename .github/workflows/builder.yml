@@ -100,9 +100,6 @@ jobs:
       run: |
         ls -lah $(pwd) && ls -lah $(pwd)/transfer-src/.config && ls -lah $(pwd)/certificates && ls -lah $(pwd)/transfer/transfer
 
-    - name: Run occ command
-      run: |
-        docker exec -t -u 33:33 nextcloud /bin/bash -c 'php occ status'
 
     - name: Run occ command
       run: |
