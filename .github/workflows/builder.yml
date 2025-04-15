@@ -106,11 +106,11 @@ jobs:
 
     - name: Run occ command
       run: |
-        docker exec -t -u 1001:118 nextcloud sh -c 'php occ config:list --output=json_pretty'
+        docker exec -t -u 33:33 nextcloud sh -c 'php occ config:list --output=json_pretty'
 
     - name: Run occ command
       run: |
-        docker exec -t -u 1001:118 nextcloud sh -c "php occ integrity:sign-app \
+        docker exec -t -u 33:33 nextcloud sh -c "php occ integrity:sign-app \
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
