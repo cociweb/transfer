@@ -32,7 +32,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
-    entrypoint: ["/bin/bash", "-c" , "chown -R 33:33 /var/www/html/config && chmod -R 755 /var/www/html/config && chown -R 33:33 /certificates && chmod -R 755 /certificates && /entrypoint.sh apache2-foreground "]
+    entrypoint: ["/bin/bash", "-c" , "chown -R 33:33 /var/www/html/transfer && chmod -R 755 /var/www/html/transfer && chown -R 33:33 /var/www/html/config && chmod -R 755 /var/www/html/config && chown -R 33:33 /certificates && chmod -R 755 /certificates && /entrypoint.sh apache2-foreground "]
     environment:
       - UID=33
       - GID=33
