@@ -106,7 +106,7 @@ jobs:
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33:33 nextcloud bin/bash -c "php occ integrity:sign-app \
+        docker exec -t -u 33:33 nextcloud /bin/bash -c "php occ integrity:sign-app \
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
