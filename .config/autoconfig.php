@@ -8,5 +8,5 @@ $AUTOCONFIG = array(
   "dbtableprefix" => "",
   "adminlogin"    => "root",
   "adminpass"     => "root-password",
-  "directory"     => "/www/htdocs/nextcloud/data",
+  "directory"     => "/var/www/html/data",
 );
