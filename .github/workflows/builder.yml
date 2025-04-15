@@ -93,24 +93,20 @@ jobs:
       run: |
         docker-compose -f $(pwd)/transfer-src/.config/docker-compose.yml up -d
 
-    - name: Run occ command
-      run: |
-        ls -lah $(pwd) && ls -lah $(pwd)/transfer-src/.config && ls -lah $(pwd)/certificates
-
     - name: Wait for 30 seconds
       run: sleep 30
 
-    - name: Run occ command
+    - name: Run host command
       run: |
         ls -lah $(pwd) && ls -lah $(pwd)/transfer-src/.config && ls -lah $(pwd)/certificates
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33:33 nextcloud sh -c 'php occ config:list --output=json_pretty'
+        docker exec -t -u 33:33 nextcloud /bin/bash -c 'php occ config:list --output=json_pretty'
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33:33 nextcloud sh -c "php occ integrity:sign-app \
+        docker exec -t -u 33:33 nextcloud bin/bash -c "php occ integrity:sign-app \
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
             --path=/var/www/html/nextcloud-transfer.tar.gz && \
