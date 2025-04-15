@@ -109,8 +109,8 @@ jobs:
         docker exec -t -u 33:33 nextcloud /bin/bash -c "php occ integrity:sign-app \
             --privateKey=/certificates/transfer.key \
             --certificate=/certificates/transfer.crt \
-            --path=/var/www/html/nextcloud-transfer.tar.gz && \
-        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /certificates"
+            --path=/var/www/html/transfer && \
+        ls -lah /var/www/html && ls -lah /var/www/html/config && ls -lah /var/www/html/transfer && ls -lah /var/www/html/transfer/appinfo && ls -lah /certificates"
 
     - name: Stop and remove Docker container
       run: |
