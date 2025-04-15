@@ -102,7 +102,7 @@ jobs:
 
     - name: Run occ command
       run: |
-        docker exec -t -u 33:33 nextcloud /bin/bash -c 'php occ config:list --output=json_pretty'
+        docker exec -t -u 33:33 nextcloud /bin/bash -c 'php occ status'
 
     - name: Run occ command
       run: |
