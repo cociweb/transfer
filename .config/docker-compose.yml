@@ -28,6 +28,7 @@ services:
       - nextcloud:/var/www/html
       - ${PWD}/certificates:/certificates
       - ${PWD}/transfer-src/.config:/var/www/html/config
+      - ${PWD}/transfer/transfer:/var/www/html/transfer
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
