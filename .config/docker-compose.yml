@@ -19,21 +19,22 @@ services:
     image: nextcloud:apache
     container_name: nextcloud
     restart: always
+    privileged: true
     working_dir: /var/www/html
-    user: 1001:118
     ports:
       - 127.0.0.1:8080:80
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - nextcloud:/var/www/html
       - ./certificates:/var/www/html/certificates
       - ./transfer-src/.config:/var/www/html/config
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # NOTE: The `volumes` config of the `cron` and `app` containers must match
-    entrypoint: ["/bin/bash", "-c" , "chown -R 1001:118 /var/www/html/config && chmod -R 755 /var/www/html/config && chown -R 1001:118 /var/www/html/certificates && chmod -R 755 /var/www/html/certificates && /entrypoint.sh apache2-foreground "]
+    entrypoint: ["/bin/bash", "-c" , "chown -R 33:33 /var/www/html/config && chmod -R 755 /var/www/html/config && chown -R 33:33 /var/www/html/certificates && chmod -R 755 /var/www/html/certificates && /entrypoint.sh apache2-foreground "]
     environment:
-      - UID=1001
-      - GID=118
+      - UID=33
+      - GID=33
       - MYSQL_HOST=db
     env_file:
       - db.env
