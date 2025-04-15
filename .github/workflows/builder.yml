@@ -98,7 +98,7 @@ jobs:
 
     - name: Run host command
       run: |
-        ls -lah $(pwd) && ls -lah $(pwd)/transfer-src/.config && ls -lah $(pwd)/certificates
+        ls -lah $(pwd) && ls -lah $(pwd)/transfer-src/.config && ls -lah $(pwd)/certificates && ls -lah $(pwd)/transfer
 
     - name: Run occ command
       run: |
